@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace ECommerceCore.Domain.Enities
+namespace ECommerceCore.Application.DTOs.ProductsDTO
 {
-    public class Product
+    public class CreateProductDto
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public string Category { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
+        public IFormFile Image { get; set; } = null;
         public string Description { get; set; } = string.Empty;
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

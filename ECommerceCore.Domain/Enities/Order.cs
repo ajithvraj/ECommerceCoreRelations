@@ -18,6 +18,7 @@ namespace ECommerceCore.Domain.Enities
         public OrderStatus Status { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string OrderNumber { get; set; } = Guid.NewGuid().ToString();
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
