@@ -4,6 +4,7 @@ using ECommerceCore.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using ECommerceCore.Application.Exceptions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,6 +88,26 @@ namespace ECommerceCore.Infrastructure.Repository.ProductRepository
             return await exist.ToListAsync();
 
 
+
+        }
+
+        public async Task<IEnumerable<Product>> GetInactiveProductAsync()
+        {
+            return await _db.Products.Where(x => !x.IsActive).ToListAsync();
+
+        }
+
+        public async Task<Product> RestoreProductAsync(int id)
+        {
+
+            var product = await _db.Products.FirstAsync(x => x.Id == id);
+
+            if (product == null) throw new NotFoundException("Product not found"); 
+
+           product.IsActive = true; 
+
+            await _db.SaveChangesAsync(); 
+            return product;
 
         }
 

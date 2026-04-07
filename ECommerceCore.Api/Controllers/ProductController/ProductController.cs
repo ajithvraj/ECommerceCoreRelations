@@ -86,6 +86,32 @@ namespace ECommerceCore.Api.Controllers.ProductController
 
         }
 
+        [Authorize(Roles = "Admin")]
+
+        [HttpGet("InactiveProducts")] 
+
+        public async Task<IActionResult> GetInactiveProducts()
+        {
+
+            var product = await _productService.GetInactiveProductAsync();
+
+            return Ok(ApiResponse<IEnumerable< ProductResponseDto>>.SuccessResult(product,"Inactive products fetched"));
+
+        }
+
+        [Authorize(Roles = "Admin")]
+
+        [HttpPatch("restore/{id}")] 
+
+        public async Task<IActionResult> RestoreProdut(int id)
+        {
+
+            var product = await _productService.RestoreProductAsync(id);
+            return Ok(ApiResponse<ProductResponseDto>.SuccessResult(product,"Product Restored"));
+
+        }
+
+
 
 
 

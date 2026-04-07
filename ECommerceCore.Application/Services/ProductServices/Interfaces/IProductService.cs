@@ -15,5 +15,12 @@ namespace ECommerceCore.Application.Services.ProductServices.Interfaces
         Task<ProductResponseDto> UpdateProductAsync(int id, UpdateProductDto update);
         Task<bool> DeleteProductAsync(int id);
         Task<IEnumerable<ProductResponseDto>> SearchProductAsync(string? name , string? category,decimal minPrice, decimal maxPrice);
+        Task<IEnumerable<ProductResponseDto>> GetInactiveProductAsync();
+        Task<ProductResponseDto> RestoreProductAsync(int id);
+        
+
+
+
+        
     }
 }

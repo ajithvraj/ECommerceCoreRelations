@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ECommerceCore.Application.Services.ProductServices.Services
 {
@@ -121,6 +122,22 @@ namespace ECommerceCore.Application.Services.ProductServices.Services
 
 
         }
+
+        public async Task<IEnumerable<ProductResponseDto>> GetInactiveProductAsync()
+        {
+            var product = await _repo.GetInactiveProductAsync(); 
+
+            return product.Select(MapToResponse);
+
+        }
+       public async Task<ProductResponseDto> RestoreProductAsync(int id)
+        {
+            var product = await _repo.GetProductByIdAsync(id);
+
+            return MapToResponse(product);
+
+        }
+
 
         private ProductResponseDto MapToResponse(Product product) => new ProductResponseDto
         {

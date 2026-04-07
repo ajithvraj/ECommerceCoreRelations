@@ -38,7 +38,8 @@ namespace ECommerceCore.Application.Services.CustomerServices.Services
             {
                 Name = request.Name,
                 Email = request.Email,
-               Role = "User",
+                Role = "User",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
             };
 
             var created = await _repo.AddCustomerAsync(customer);
@@ -60,8 +61,9 @@ namespace ECommerceCore.Application.Services.CustomerServices.Services
             if (existing == null)
                 throw new NotFoundException("Account not found");
 
-            if (existing.Name != login.Name)
+            if(!BCrypt.Net.BCrypt.Verify(login.Password,existing.PasswordHash))
                 throw new BadRequestException("Invalid credentials");
+
             var token = _jwtService.GenerateToken(existing); 
 
             return new CustomerResponseDto

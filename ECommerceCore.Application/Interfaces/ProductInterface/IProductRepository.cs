@@ -17,6 +17,8 @@ namespace ECommerceCore.Application.Interfaces.ProductInterface
         Task<bool> DeleteProductAsync(int id);
 
         Task<IEnumerable<Product>> SearchProductAsync(string? name,string? category ,  decimal? minPrice, decimal? maxPrice);
+        Task<IEnumerable<Product>> GetInactiveProductAsync();
+        Task<Product> RestoreProductAsync(int id); 
 
 
     }

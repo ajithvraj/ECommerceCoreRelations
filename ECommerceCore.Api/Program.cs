@@ -19,6 +19,10 @@ using ECommerceCore.Application.Interfaces.ProductInterface;
 using ECommerceCore.Application.Services.ProductServices.Interfaces;
 using ECommerceCore.Application.Services.ProductServices.Services;
 using Microsoft.OpenApi.Models;
+using ECommerceCore.Application.Interfaces.CartInterface;
+using ECommerceCore.Infrastructure.Repository.CartRepository;
+using ECommerceCore.Application.Services.CartServices.Interfaces;
+using ECommerceCore.Application.Services.CartServices.Services;
 
 namespace ECommerceCore.Api
 {
@@ -42,6 +46,8 @@ namespace ECommerceCore.Api
             builder.Services.AddScoped<ICustomerServices, CustomerServices>();
             builder.Services.AddScoped<IProductRepository, ProductRepositoryServices>();
             builder.Services.AddScoped<IProductService, ProductServices>();
+            builder.Services.AddScoped<ICartRepository,CartRepositoryServices>();
+            builder.Services.AddScoped<ICartServices,CartServices>();
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<CloudinaryService>();
 
