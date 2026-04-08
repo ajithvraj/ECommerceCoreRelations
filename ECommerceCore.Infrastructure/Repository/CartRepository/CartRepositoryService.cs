@@ -67,5 +67,11 @@ namespace ECommerceCore.Infrastructure.Repository.CartRepository
             await _db.SaveChangesAsync();
             return true;
         }
+        public async Task<CartItem?> GetCartItemByIdAsync(int cartItemId, int customerId)
+        {
+            return await _db.CartItems
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(c => c.Id == cartItemId && c.CustomerId == customerId);
+        }
     }
 }

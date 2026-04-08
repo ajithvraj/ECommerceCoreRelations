@@ -23,6 +23,10 @@ using ECommerceCore.Application.Interfaces.CartInterface;
 using ECommerceCore.Infrastructure.Repository.CartRepository;
 using ECommerceCore.Application.Services.CartServices.Interfaces;
 using ECommerceCore.Application.Services.CartServices.Services;
+using ECommerceCore.Application.Interfaces.OrderIterface;
+using ECommerceCore.Infrastructure.Repository.OrderRepository;
+using ECommerceCore.Application.Services.Orderservice.Interfaces;
+using ECommerceCore.Application.Services.Orderservice.Services;
 
 namespace ECommerceCore.Api
 {
@@ -48,6 +52,8 @@ namespace ECommerceCore.Api
             builder.Services.AddScoped<IProductService, ProductServices>();
             builder.Services.AddScoped<ICartRepository,CartRepositoryServices>();
             builder.Services.AddScoped<ICartServices,CartServices>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepositoryService>();
+            builder.Services.AddScoped<IOrderServices,OrderService>();
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<CloudinaryService>();
 

@@ -15,5 +15,6 @@ namespace ECommerceCore.Application.Interfaces.CartInterface
         Task<CartItem> UpdateCartItemAsync(CartItem item);
         Task<bool> RemoveCartItemAsync(int cartItemId, int customerId);
         Task<bool> ClearCartAsync(int customerId);
+        Task<CartItem?> GetCartItemByIdAsync(int cartItemId, int customerId);
     }
 }
