@@ -15,6 +15,8 @@ namespace ECommerceCore.Application.DTOs.CustomerDTO
         public string Role { get; set; } 
 
         public string Token { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;     // ✅ add
+        public DateTime RefreshTokenExpiry { get; set; }
 
     }
 }

@@ -14,7 +14,10 @@ namespace ECommerceCore.Domain.Enities
         public string Email { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string Role { get; set; } = "User";
+        public string? RefreshToken {  get; set; } 
+        public DateTime? RefreshTokenExpiry { get; set; }
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
     } 
 }

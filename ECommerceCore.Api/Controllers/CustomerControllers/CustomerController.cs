@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ECommerceCore.Application.Services.CustomerServices.Interfaces;
-using Microsoft.OpenApi.Writers;
 using ECommerceCore.Application.DTOs.CustomerDTO;
-using Microsoft.AspNetCore.Http.HttpResults;
 using ECommerceCore.Application.Common;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ECommerceCore.Api.Controllers.CustomerControllers
 {
@@ -12,39 +12,98 @@ namespace ECommerceCore.Api.Controllers.CustomerControllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
+        private readonly ICustomerServices _custumer;
 
-        private readonly ICustomerServices _custumer; 
-
-        public CustomerController (ICustomerServices customer)
+        public CustomerController(ICustomerServices customer)
         {
             _custumer = customer;
-
         }
 
-        [HttpPost("Register")] 
+        private int GetCustomerId() =>
+            int.Parse(User.FindFirstValue("UserId")
+                ?? throw new UnauthorizedAccessException("User not found"));
 
-        public async Task<IActionResult>CreateAccount(CreateCustomerDto dto)
+        // Public
+        [HttpPost("Register")]
+        public async Task<IActionResult> CreateAccount(CreateCustomerDto dto)
         {
-            var acccount = await _custumer.AddCustomerAsync(dto);
-
-            return Ok(ApiResponse<CustomerResponseDto>.SuccessResult(acccount));
-
-
-
+            var account = await _custumer.AddCustomerAsync(dto);
+            return Ok(ApiResponse<CustomerResponseDto>.SuccessResult(account));
         }
 
-
-        [HttpPost("Login")] 
-        public async Task<IActionResult>Login(LoginCustomerDto log)
+        //  Public
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginCustomerDto log)
         {
-
             var login = await _custumer.CustomerLoginAsync(log);
-
             return Ok(ApiResponse<CustomerResponseDto>.SuccessResult(login));
-
         }
-           
 
+        // Public
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenDto request)
+        {
+            var result = await _custumer.RefreshTokenAsync(request);
+            return Ok(ApiResponse<CustomerResponseDto>.SuccessResult(result, "Token refreshed successfully"));
+        }
 
+        //  Authorized
+        [Authorize]
+        [HttpPost("revoke-token")]
+        public async Task<IActionResult> RevokeToken()
+        {
+            var customerId = GetCustomerId();
+            var result = await _custumer.RevokeTokenAsync(customerId);
+            return Ok(ApiResponse<bool>.SuccessResult(result, "Logged out successfully"));
+        }
+
+        // Customer
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var customerId = GetCustomerId();
+            var result = await _custumer.GetProfileAsync(customerId);
+            return Ok(ApiResponse<CustomerProfileResponseDto>.SuccessResult(result, "Profile retrieved successfully"));
+        }
+
+        // Customer
+        [Authorize]
+        [HttpPut("profile/update")]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileDto request)
+        {
+            var customerId = GetCustomerId();
+            var result = await _custumer.UpdateProfileAsync(customerId, request);
+            return Ok(ApiResponse<CustomerProfileResponseDto>.SuccessResult(result, "Profile updated successfully"));
+        }
+
+        //  Customer
+        [Authorize]
+        [HttpPatch("profile/change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto request)
+        {
+            var customerId = GetCustomerId();
+            var result = await _custumer.ChangePasswordAsync(customerId, request);
+            return Ok(ApiResponse<bool>.SuccessResult(result, "Password changed successfully"));
+        }
+
+        //  Customer
+        [Authorize]
+        [HttpDelete("profile/delete")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var customerId = GetCustomerId();
+            var result = await _custumer.DeleteAccountAsync(customerId);
+            return Ok(ApiResponse<bool>.SuccessResult(result, "Account deleted successfully"));
+        }
+
+        //  Admin
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllCustomers()
+        {
+            var result = await _custumer.GetAllCustomersAsync();
+            return Ok(ApiResponse<IEnumerable<CustomerProfileResponseDto>>.SuccessResult(result, "Customers retrieved successfully"));
+        }
     }
 }

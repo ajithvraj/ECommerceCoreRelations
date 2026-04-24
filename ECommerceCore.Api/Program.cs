@@ -108,7 +108,7 @@ namespace ECommerceCore.Api
                             Encoding.UTF8.GetBytes(config["JwtSettings:Key"]
                                 ?? throw new InvalidOperationException("JWT Key is not configured"))),
 
-                        // ✅ added these two
+                       
                         RoleClaimType = ClaimTypes.Role,
                         NameClaimType = ClaimTypes.Name
                     };
