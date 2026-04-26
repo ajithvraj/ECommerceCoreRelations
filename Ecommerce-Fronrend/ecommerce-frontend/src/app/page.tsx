@@ -30,7 +30,7 @@ export default function Home() {
         const response = await api.get("/Product/all");
         setProducts(response.data.data);
       } catch {
-        console.error("Failed to fetch products");
+        console.log("Failed to fetch products");
       } finally {
         setLoading(false);
       }
@@ -186,24 +186,24 @@ export default function Home() {
       </section>
 
       {/* footer */}
-{/* <footer className="border-t border-white/5 py-10 px-6">
-  <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <span className="text-zinc-600 text-sm">
-      © 2025 ECommerceCore. All rights reserved.
-    </span>
-    <div className="flex gap-6">
-      {["Privacy", "Terms", "Contact"].map((item) => (
-        
-          key={item}
-          href="#"
-          className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
-        >
-          {item}
-        </a>
-      ))}
-    </div>
-  </div>
-</footer> */}
+      <footer className="border-t border-white/5 py-10 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <span className="text-zinc-600 text-sm">
+            © 2025 ECommerceCore. All rights reserved.
+          </span>
+          <div className="flex gap-6">
+            {["Privacy", "Terms", "Contact"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
