@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ECommerceCore.Application.Common;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerceCore.Api.Controllers.ProductController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("global")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -75,7 +77,8 @@ namespace ECommerceCore.Api.Controllers.ProductController
 
         }
 
-        [HttpGet("Search")] 
+        [HttpGet("Search")]
+        [EnableRateLimiting("search")]
 
         public async Task<IActionResult> SearchProducts([FromQuery] string? name, [FromQuery] string? category , [FromQuery] decimal minPrice , [FromQuery] decimal maxPrice)
         {

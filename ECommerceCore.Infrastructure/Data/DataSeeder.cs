@@ -9,22 +9,11 @@ namespace ECommerceCore.Infrastructure.Data
     {
         public static async Task SeedAdminAsync(AppDbContext context)
         {
-            //  clear existing data in correct order (respect foreign keys)
-            context.OrderItems.RemoveRange(context.OrderItems);
-            context.Orders.RemoveRange(context.Orders);
-            context.CartItems.RemoveRange(context.CartItems);
-            context.Products.RemoveRange(context.Products);
-            context.Customers.RemoveRange(context.Customers);
-            await context.SaveChangesAsync();
+            // only seed if no admin exists — don't clear data on every restart
+            if (await context.Customers.AnyAsync(c => c.Role == "Admin"))
+                return;
 
-            // ✅ reset identity seeds so IDs start from 1 again
-            await context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('Customers', RESEED, 0)");
-            await context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('Products', RESEED, 0)");
-            await context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('Orders', RESEED, 0)");
-            await context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('OrderItems', RESEED, 0)");
-            await context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('CartItems', RESEED, 0)");
-
-            // ✅ seed fresh admin with hashed password
+            // seed fresh admin with hashed password
             var admin = new Customer
             {
                 Name = "Admin",

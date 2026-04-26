@@ -27,6 +27,8 @@ using ECommerceCore.Application.Interfaces.OrderIterface;
 using ECommerceCore.Infrastructure.Repository.OrderRepository;
 using ECommerceCore.Application.Services.Orderservice.Interfaces;
 using ECommerceCore.Application.Services.Orderservice.Services;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 namespace ECommerceCore.Api
 {
@@ -109,10 +111,45 @@ namespace ECommerceCore.Api
                                 ?? throw new InvalidOperationException("JWT Key is not configured"))),
 
                        
-                        RoleClaimType = ClaimTypes.Role,
-                        NameClaimType = ClaimTypes.Name
+                        RoleClaimType = "role",
+                        NameClaimType = "name"
                     };
                 });
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                // fixed window — 5 requests per minute for login
+                options.AddFixedWindowLimiter("login", opt =>
+                {
+                    opt.PermitLimit = 5;
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 0;
+                });
+
+                //  fixed window — 30 requests per minute for search
+                options.AddFixedWindowLimiter("search", opt =>
+                {
+                    opt.PermitLimit = 30;
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 0;
+                });
+
+                // global — 100 requests per minute for all endpoints
+                options.AddFixedWindowLimiter("global", opt =>
+                {
+                    opt.PermitLimit = 100;
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 0;
+                });
+
+                //  return 429 Too Many Requests
+                options.RejectionStatusCode = 429;
+            });
+
+           
 
             builder.Services.AddAuthorization();
 
@@ -133,6 +170,7 @@ namespace ECommerceCore.Api
             app.UseHttpsRedirection();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseAuthentication();
+            app.UseRateLimiter();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

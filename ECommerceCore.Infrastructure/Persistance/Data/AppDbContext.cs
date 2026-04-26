@@ -1,26 +1,19 @@
 ﻿using ECommerceCore.Domain.Enities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceCore.Infrastructure.Persistance.Data
 {
     public class AppDbContext : DbContext
     {
-
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Order> Orders { get; set; } 
+        public DbSet<ProductImage> ProductImages { get; set; } // ✅ added
+        public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Address> Addresses { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,7 +60,7 @@ namespace ECommerceCore.Infrastructure.Persistance.Data
             // Customer → Addresses
             modelBuilder.Entity<Address>()
                 .HasOne(a => a.Customer)
-                .WithMany(c => c. Addresses)
+                .WithMany(c => c.Addresses)
                 .HasForeignKey(a => a.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -77,13 +70,13 @@ namespace ECommerceCore.Infrastructure.Persistance.Data
                 .WithMany()
                 .HasForeignKey(o => o.AdressId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Product → ProductImages
+            modelBuilder.Entity<ProductImage>()
+                .HasOne(pi => pi.Product)
+                .WithMany(p => p.Images)
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
-
-
-
     }
-   
-    
-
-
 }

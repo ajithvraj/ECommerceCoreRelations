@@ -1,116 +1,96 @@
-﻿using ECommerceCore.Application.Interfaces.ProductInterface;
+﻿using ECommerceCore.Application.Exceptions;
+using ECommerceCore.Application.Interfaces.ProductInterface;
 using ECommerceCore.Domain.Enities;
 using ECommerceCore.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using ECommerceCore.Application.Exceptions;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceCore.Infrastructure.Repository.ProductRepository
 {
     public class ProductRepositoryServices : IProductRepository
     {
-
         private readonly AppDbContext _db;
 
-        public ProductRepositoryServices(AppDbContext db) 
-        { 
+        public ProductRepositoryServices(AppDbContext db)
+        {
             _db = db;
         }
 
-       public async Task<Product> AddProductAsync(Product product)
+        public async Task<Product> AddProductAsync(Product product)
         {
-             await _db.Products.AddAsync(product);
-
+            await _db.Products.AddAsync(product);
             await _db.SaveChangesAsync();
-
             return product;
-
-
-
-
-
         }
-      public async  Task<Product?> GetProductByIdAsync(int id)
+
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-
-            return await _db.Products.FirstOrDefaultAsync(x => x.Id == id && x.IsActive == true );
-
+            return await _db.Products
+                .Include(p => p.Images) //  load images
+                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive == true);
         }
 
-       public async Task<IEnumerable<Product>> GetAllProductAsync()
+        public async Task<IEnumerable<Product>> GetAllProductAsync()
         {
-         return   await _db.Products.Where(x => x.IsActive).ToListAsync();
-
-
+            return await _db.Products
+                .Include(p => p.Images) //  load images
+                .Where(x => x.IsActive)
+                .ToListAsync();
         }
-       public async Task<Product> UpdateProductAsync(Product product)
+
+        public async Task<Product> UpdateProductAsync(Product product)
         {
             _db.Products.Update(product);
-            await _db.SaveChangesAsync(); 
+            await _db.SaveChangesAsync();
             return product;
-
         }
-       public async Task<bool> DeleteProductAsync(int id)
+
+        public async Task<bool> DeleteProductAsync(int id)
         {
+            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if (product == null) return false;
 
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id ==id);
-            if (product == null)
-            {
-                return false;
-                
-            }
-
-            product.IsActive = false; 
+            product.IsActive = false;
             await _db.SaveChangesAsync();
             return true;
-
         }
 
-       public async Task<IEnumerable<Product>> SearchProductAsync(string? name, string? category, decimal? minPrice, decimal? maxPrice)
+        public async Task<IEnumerable<Product>> SearchProductAsync(string? name, string? category, decimal? minPrice, decimal? maxPrice)
         {
-            var exist = _db.Products.Where(p => p.IsActive).AsQueryable();
+            var exist = _db.Products
+                .Include(p => p.Images) //  load images
+                .Where(p => p.IsActive)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(name))
-            {
                 exist = exist.Where(x => x.Name.Contains(name));
-                
-            }
 
-            if(!string.IsNullOrWhiteSpace(category)) exist = exist.Where(c => c.Category.Contains(category)); 
+            if (!string.IsNullOrWhiteSpace(category))
+                exist = exist.Where(c => c.Category.Contains(category));
 
-            if(minPrice.HasValue) exist = exist.Where(p => p.Price >=  minPrice.Value);
-            if(maxPrice.HasValue) exist = exist.Where(p => p.Price <= maxPrice.Value); 
+            if (minPrice.HasValue)
+                exist = exist.Where(p => p.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                exist = exist.Where(p => p.Price <= maxPrice.Value);
 
             return await exist.ToListAsync();
-
-
-
         }
 
         public async Task<IEnumerable<Product>> GetInactiveProductAsync()
         {
-            return await _db.Products.Where(x => !x.IsActive).ToListAsync();
-
+            return await _db.Products
+                .Include(p => p.Images) //  load images
+                .Where(x => !x.IsActive)
+                .ToListAsync();
         }
 
         public async Task<Product> RestoreProductAsync(int id)
         {
-
             var product = await _db.Products.FirstAsync(x => x.Id == id);
-
-            if (product == null) throw new NotFoundException("Product not found"); 
-
-           product.IsActive = true; 
-
-            await _db.SaveChangesAsync(); 
+            if (product == null) throw new NotFoundException("Product not found");
+            product.IsActive = true;
+            await _db.SaveChangesAsync();
             return product;
-
         }
-
-
     }
 }

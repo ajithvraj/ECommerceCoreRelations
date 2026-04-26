@@ -65,8 +65,7 @@ namespace ECommerceCore.Application.Services.CartServices.Services
                 Id = item.Id,
                 ProductId = item.ProductId,
                 ProductName = item.Product?.Name ?? string.Empty,
-                ProductImage = item.Product?.ImageUrl ?? string.Empty,
-                Price = item.Product?.Price ?? 0,
+                ProductImage = item.Product?.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl?? item.Product?.Images.FirstOrDefault()?.ImageUrl ?? string.Empty,
                 Quantity = item.Quantity,
                 TotalPrice = (item.Product?.Price ?? 0) * item.Quantity
             }).ToList();

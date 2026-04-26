@@ -20,9 +20,9 @@ namespace ECommerceCore.Application.Common
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("name", user.Name),
+                new Claim("Email", user.Email),
+                new Claim("role", user.Role),
                 new Claim("UserId", user.Id.ToString())
             };
             var key = new SymmetricSecurityKey(

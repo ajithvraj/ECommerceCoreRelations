@@ -197,7 +197,9 @@ namespace ECommerceCore.Application.Services.Orderservice.Services
                 Id = i.Id,
                 ProductId = i.ProductId,
                 ProductName = i.Product?.Name?? string.Empty,
-                ProductImage = i.Product?.ImageUrl?? string.Empty,
+                ProductImage = i.Product?.Images
+    .FirstOrDefault(img => img.IsPrimary)?.ImageUrl ??
+    i.Product?.Images.FirstOrDefault()?.ImageUrl ?? string.Empty,
                 Quantity = i.Quantity,
                 Price = i.Price,
                 TotalPrice = i.Price * i.Quantity

@@ -14,9 +14,10 @@ namespace ECommerceCore.Application.DTOs.ProductsDTO
         public int Stock { get; set; }
         public string Description { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
-
+        public string PrimaryImageUrl { get; set; } = string.Empty; //  main image
+        public List<string> ImageUrls { get; set; } = new List<string>(); // all images
     }
+
 }

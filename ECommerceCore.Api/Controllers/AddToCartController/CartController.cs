@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace ECommerceCore.Api.Controllers.AddToCartController
@@ -13,6 +14,7 @@ namespace ECommerceCore.Api.Controllers.AddToCartController
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [EnableRateLimiting("global")]
     public class CartController : ControllerBase
     {
 

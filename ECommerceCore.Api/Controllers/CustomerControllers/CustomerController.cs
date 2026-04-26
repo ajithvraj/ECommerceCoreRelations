@@ -5,6 +5,7 @@ using ECommerceCore.Application.DTOs.CustomerDTO;
 using ECommerceCore.Application.Common;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerceCore.Api.Controllers.CustomerControllers
 {
@@ -25,6 +26,7 @@ namespace ECommerceCore.Api.Controllers.CustomerControllers
 
         // Public
         [HttpPost("Register")]
+        [EnableRateLimiting("login")] //max 5/minute
         public async Task<IActionResult> CreateAccount(CreateCustomerDto dto)
         {
             var account = await _custumer.AddCustomerAsync(dto);
@@ -33,6 +35,7 @@ namespace ECommerceCore.Api.Controllers.CustomerControllers
 
         //  Public
         [HttpPost("Login")]
+        [EnableRateLimiting("login")] //max 5/minute
         public async Task<IActionResult> Login(LoginCustomerDto log)
         {
             var login = await _custumer.CustomerLoginAsync(log);

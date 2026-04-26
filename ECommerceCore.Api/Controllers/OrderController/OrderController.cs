@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace ECommerceCore.Api.Controllers.OrderController
@@ -12,6 +13,7 @@ namespace ECommerceCore.Api.Controllers.OrderController
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [EnableRateLimiting("global")]
     public class OrderController : ControllerBase
     {
 
