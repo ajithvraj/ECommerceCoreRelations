@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Header from "@/components/ui/Header";
-import AuthModal from "@/components/AuthModals";
 import ProductCard from "@/components/ProductCard";
 import api from "@/lib/axios";
 
@@ -19,8 +17,6 @@ interface Product {
 }
 
 export default function Home() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,8 +25,8 @@ export default function Home() {
       try {
         const response = await api.get("/Product/all");
         setProducts(response.data.data);
-      } catch {
-        console.log("Failed to fetch products");
+      } catch (error) {
+        console.error("Failed to fetch products", error);
       } finally {
         setLoading(false);
       }
@@ -38,33 +34,10 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const openLogin = () => {
-    setActiveTab("login");
-    setModalOpen(true);
-  };
-
-  const openRegister = () => {
-    setActiveTab("register");
-    setModalOpen(true);
-  };
-
   return (
     <div className="min-h-screen bg-black text-white">
-      
-      {/* header */}
-      <Header
-        onLoginClick={openLogin}
-        onRegisterClick={openRegister}
-      />
 
-      {/* auth modal */}
-      <AuthModal
-        isOpen={modalOpen}
-        defaultTab={activeTab}
-        onClose={() => setModalOpen(false)}
-      />
-
-      {/* hero section */}
+      {/* hero */}
       <section className="pt-32 pb-16 px-6 text-center">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -101,7 +74,6 @@ export default function Home() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={openRegister}
             className="bg-white text-black px-8 py-3 rounded-full text-sm font-medium hover:bg-zinc-200 transition-colors"
           >
             Shop now
@@ -116,10 +88,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* products grid */}
+      {/* products */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        
-        {/* section header */}
         <div className="flex items-center justify-between mb-10">
           <div>
             <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">
@@ -137,7 +107,7 @@ export default function Home() {
           </motion.button>
         </div>
 
-        {/* loading skeleton */}
+        {/* skeleton */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -157,7 +127,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* products */}
+        {/* products grid */}
         {!loading && products.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product, index) => (
@@ -170,7 +140,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* empty state */}
+        {/* empty */}
         {!loading && products.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -186,14 +156,14 @@ export default function Home() {
       </section>
 
       {/* footer */}
-      <footer className="border-t border-white/5 py-10 px-6">
+      {/* <footer className="border-t border-white/5 py-10 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="text-zinc-600 text-sm">
             © 2025 ECommerceCore. All rights reserved.
           </span>
           <div className="flex gap-6">
             {["Privacy", "Terms", "Contact"].map((item) => (
-              <a
+              
                 key={item}
                 href="#"
                 className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
@@ -203,7 +173,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }

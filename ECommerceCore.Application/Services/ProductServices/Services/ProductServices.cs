@@ -53,6 +53,8 @@ namespace ECommerceCore.Application.Services.ProductServices.Services
                 throw new NotFoundException("Product not found");
             return MapToResponse(product);
         }
+        //In your ProductService / Handler
+
 
         public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()
         {

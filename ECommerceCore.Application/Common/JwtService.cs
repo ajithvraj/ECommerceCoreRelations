@@ -21,7 +21,7 @@ namespace ECommerceCore.Application.Common
             var claims = new List<Claim>
             {
                 new Claim("name", user.Name),
-                new Claim("Email", user.Email),
+                new Claim("email", user.Email),
                 new Claim("role", user.Role),
                 new Claim("UserId", user.Id.ToString())
             };

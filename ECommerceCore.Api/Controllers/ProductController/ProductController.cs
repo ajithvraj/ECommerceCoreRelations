@@ -116,6 +116,23 @@ namespace ECommerceCore.Api.Controllers.ProductController
 
 
 
+        [HttpGet("test-auth")]
+        [Authorize]
+        public IActionResult TestAuth()
+        {
+            var claims = User.Claims.Select(c => new { c.Type, c.Value });
+            return Ok(claims);
+        }
+
+        [HttpGet("test-admin")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult TestAdmin()
+        {
+            return Ok("You are admin!");
+        }
+
+
+
 
 
 

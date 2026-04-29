@@ -1,4 +1,5 @@
-﻿using ECommerceCore.Application.DTOs.ProductsDTO;
+﻿using ECommerceCore.Application.Common;
+using ECommerceCore.Application.DTOs.ProductsDTO;
 
 namespace ECommerceCore.Application.Services.ProductServices.Interfaces
 {
